@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { FaHeartbeat } from "react-icons/fa";
 import styles from "../style";
 import { robot } from "../assets";
 import GetStarted from "./GetStarted";
@@ -26,6 +28,29 @@ const Hero = () => {
             <GetStarted />
           </div>
         </div>
+
+        <Link
+          to="/9care-ai"
+          className="group mt-5 flex w-full max-w-[470px] items-center gap-4 rounded-2xl border border-secondary/30 bg-white/[0.06] p-4 transition-colors hover:border-secondary/70 hover:bg-white/[0.1] sm:p-5"
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-secondary/20 text-2xl text-secondary">
+            <FaHeartbeat aria-hidden="true" />
+          </span>
+          <span className="flex-1">
+            <span className="block font-poppins text-base font-semibold text-white sm:text-lg">
+              Meet 9Care AI
+            </span>
+            <span className="mt-1 block font-poppins text-sm leading-5 text-dimWhite">
+              Smarter pregnancy care, right by your side
+            </span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="text-xl text-secondary transition-transform group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </Link>
 
         <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
           Unlock the power of AI to transform lives and foster economic
