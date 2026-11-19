@@ -1,15 +1,5 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  FaArrowLeft,
-  FaBookOpen,
-  FaCalendarCheck,
-  FaComments,
-  FaExternalLinkAlt,
-  FaHeartbeat,
-  FaShieldAlt,
-  FaUserMd,
-} from "react-icons/fa";
 
 const videos = [
   {
@@ -42,25 +32,21 @@ const videos = [
 
 const features = [
   {
-    icon: FaHeartbeat,
     title: "1. Report symptoms",
     description:
       "Log symptoms that raise concern so your healthcare team can be notified and follow up. Contact a provider or make an emergency call from the app when needed.",
   },
   {
-    icon: FaBookOpen,
     title: "2. Learn",
     description:
       "Access pregnancy materials vetted and recorded by healthcare professionals. If something is unclear, leave a question in the interactive learning space for a healthcare provider to answer.",
   },
   {
-    icon: FaCalendarCheck,
     title: "3. Book appointments",
     description:
       "Choose an available date and time for an appointment, then manage or reschedule later visits. Doctors are alerted when an appointment is booked or changed.",
   },
   {
-    icon: FaShieldAlt,
     title: "4. Profile and records",
     description:
       "Manage personal and spouse details, complete the health assessment, update account information, verify an email address, and add a WhatsApp number for pregnancy updates.",
@@ -75,7 +61,6 @@ const NineCare = () => (
           to="/"
           className="inline-flex items-center gap-2 font-poppins text-sm text-dimWhite transition-colors hover:text-secondary"
         >
-          <FaArrowLeft aria-hidden="true" />
           Back to AI Women Rising
         </Link>
 
@@ -125,7 +110,7 @@ const NineCare = () => (
               }}
               className="group h-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#101a2d] to-[#070b14] shadow-lg transition-colors hover:border-secondary/40 hover:shadow-secondary/10"
             >
-              <div className="aspect-[4/3] w-full overflow-hidden bg-black">
+              <div className="aspect-[9/16] w-full overflow-hidden bg-black">
                 <iframe
                   src={`https://www.youtube-nocookie.com/embed/${video.videoId}`}
                   title={video.title}
@@ -158,10 +143,6 @@ const NineCare = () => (
                   className="mt-5 inline-flex items-center gap-2 rounded-xl bg-secondary/10 px-4 py-2.5 font-poppins text-sm font-semibold text-secondary transition-colors hover:bg-secondary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
                 >
                   Watch on YouTube
-                  <FaExternalLinkAlt
-                    aria-hidden="true"
-                    className="text-[10px]"
-                  />
                 </a>
               </div>
             </motion.article>
@@ -186,15 +167,12 @@ const NineCare = () => (
         </div>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          {features.map(({ icon: Icon, title, description }) => (
+          {features.map(({ title, description }) => (
             <article
               key={title}
               className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-7"
             >
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/10 text-xl text-secondary">
-                <Icon aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 font-poppins text-xl font-semibold text-white">
+              <h3 className="font-poppins text-xl font-semibold text-white">
                 {title}
               </h3>
               <p className="mt-3 font-poppins text-sm leading-7 text-dimWhite">
@@ -209,10 +187,7 @@ const NineCare = () => (
     <section className="bg-primary">
       <div className="mx-auto grid max-w-7xl gap-8 px-6 py-14 sm:px-10 md:grid-cols-2 lg:px-16 lg:py-16">
         <article className="rounded-2xl border border-secondary/20 bg-primary p-6 sm:p-8">
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/10 text-xl text-secondary">
-            <FaComments aria-hidden="true" />
-          </span>
-          <h2 className="mt-5 font-poppins text-2xl font-semibold text-white">
+          <h2 className="font-poppins text-2xl font-semibold text-white">
             9Care AI chat assistant
           </h2>
           <p className="mt-3 font-poppins leading-7 text-dimWhite">
@@ -226,10 +201,7 @@ const NineCare = () => (
         </article>
 
         <article className="rounded-2xl border border-white/10 bg-primary p-6 sm:p-8">
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/10 text-xl text-secondary">
-            <FaUserMd aria-hidden="true" />
-          </span>
-          <h2 className="mt-5 font-poppins text-2xl font-semibold text-white">
+          <h2 className="font-poppins text-2xl font-semibold text-white">
             Learning with healthcare professionals
           </h2>
           <p className="mt-3 font-poppins leading-7 text-dimWhite">
@@ -241,10 +213,9 @@ const NineCare = () => (
             href="https://www.9careai.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 font-poppins text-sm font-semibold text-secondary hover:text-white"
+            className="mt-5 inline-flex items-center font-poppins text-sm font-semibold text-secondary hover:text-white"
           >
             Visit the 9Care AI website
-            <FaExternalLinkAlt aria-hidden="true" className="text-[10px]" />
           </a>
         </article>
       </div>
@@ -255,7 +226,6 @@ const NineCare = () => (
         to="/"
         className="inline-flex items-center gap-2 font-poppins text-sm font-medium text-dimWhite transition-colors hover:text-secondary"
       >
-        <FaArrowLeft aria-hidden="true" />
         Return to AI Women Rising
       </Link>
     </div>
