@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -31,51 +31,86 @@ const videos = [
   },
 ];
 
-const VideoCardGroup = () => (
-  <div className="ninecare-video-group flex shrink-0 gap-7 pr-7">
-    {videos.map((video) => (
-      <motion.article
-        key={video.title}
-        whileHover={{ y: -6 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-        className="group w-[min(78vw,340px)] shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#101a2d] to-[#070b14] shadow-lg transition-colors hover:border-secondary/40 hover:shadow-secondary/10"
-      >
-        <div className="aspect-[4/5] w-full overflow-hidden bg-black">
+const VideoCard = ({ video }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  return (
+    <motion.article
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className="group w-[min(78vw,340px)] shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#101a2d] to-[#070b14] shadow-lg transition-colors hover:border-secondary/40 hover:shadow-secondary/10"
+    >
+      <div className="aspect-[4/5] w-full overflow-hidden bg-black">
+        {isPlaying ? (
           <iframe
-            src={`https://www.youtube-nocookie.com/embed/${video.videoId}`}
+            src={`https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&playsinline=1`}
             title={video.title}
             className="h-full w-full"
-            loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
-        </div>
-        <div className="p-5 sm:p-6">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="font-poppins text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-              9Care AI
-            </span>
-          </div>
-          <h3 className="font-poppins text-lg font-semibold leading-7 text-white sm:text-xl">
-            {video.title}
-          </h3>
-          <p className="mt-2 min-h-12 font-poppins text-sm leading-6 text-dimWhite">
-            {video.description}
-          </p>
-          <a
-            href={
-              video.youtubeUrl ||
-              `https://www.youtube.com/shorts/${video.videoId}`
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-secondary/10 px-4 py-2.5 font-poppins text-sm font-semibold text-secondary transition-colors hover:bg-secondary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+        ) : (
+          <button
+            type="button"
+            onClick={() => setIsPlaying(true)}
+            aria-label={`Play ${video.title}`}
+            className="relative block h-full w-full overflow-hidden"
           >
-            Watch on YouTube
-          </a>
+            <img
+              src={`https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`}
+              alt=""
+              loading={video.videoId === videos[0].videoId ? "eager" : "lazy"}
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 bg-black/20 transition-colors group-hover:bg-black/35"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-secondary/90 text-primary shadow-xl transition-transform group-hover:scale-110"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-8 w-8">
+                <path d="M8 5.5v13L18 12 8 5.5Z" />
+              </svg>
+            </span>
+          </button>
+        )}
+      </div>
+      <div className="p-5 sm:p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <span className="font-poppins text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
+            9Care AI
+          </span>
         </div>
-      </motion.article>
+        <h3 className="font-poppins text-lg font-semibold leading-7 text-white sm:text-xl">
+          {video.title}
+        </h3>
+        <p className="mt-2 min-h-12 font-poppins text-sm leading-6 text-dimWhite">
+          {video.description}
+        </p>
+        <a
+          href={
+            video.youtubeUrl ||
+            `https://www.youtube.com/shorts/${video.videoId}`
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-secondary/10 px-4 py-2.5 font-poppins text-sm font-semibold text-secondary transition-colors hover:bg-secondary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+        >
+          Watch on YouTube
+        </a>
+      </div>
+    </motion.article>
+  );
+};
+
+const VideoCardGroup = () => (
+  <div className="ninecare-video-group flex shrink-0 gap-7 pr-7">
+    {videos.map((video) => (
+      <VideoCard key={video.videoId} video={video} />
     ))}
   </div>
 );
