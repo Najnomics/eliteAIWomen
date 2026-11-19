@@ -111,7 +111,7 @@ const NineCare = () => (
           YouTube walkthroughs
         </h3>
         <div className="grid grid-cols-2 gap-7 lg:grid-cols-4">
-          {videos.map((video) => (
+          {videos.map((video, index) => (
             <motion.article
               key={video.title}
               initial={{ opacity: 0, y: 24 }}
@@ -125,7 +125,7 @@ const NineCare = () => (
               }}
               className="group h-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#101a2d] to-[#070b14] shadow-lg transition-colors hover:border-secondary/40 hover:shadow-secondary/10"
             >
-              <div className="aspect-video w-full overflow-hidden bg-black">
+              <div className="aspect-[4/3] w-full overflow-hidden bg-black">
                 <iframe
                   src={`https://www.youtube-nocookie.com/embed/${video.videoId}`}
                   title={video.title}
