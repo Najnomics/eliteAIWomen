@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -30,6 +31,55 @@ const videos = [
   },
 ];
 
+const VideoCardGroup = () => (
+  <div className="ninecare-video-group flex shrink-0 gap-7 pr-7">
+    {videos.map((video) => (
+      <motion.article
+        key={video.title}
+        whileHover={{ y: -6 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="group w-[min(78vw,340px)] shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#101a2d] to-[#070b14] shadow-lg transition-colors hover:border-secondary/40 hover:shadow-secondary/10"
+      >
+        <div className="aspect-[4/5] w-full overflow-hidden bg-black">
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${video.videoId}`}
+            title={video.title}
+            className="h-full w-full"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        </div>
+        <div className="p-5 sm:p-6">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="font-poppins text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
+              9Care AI
+            </span>
+          </div>
+          <h3 className="font-poppins text-lg font-semibold leading-7 text-white sm:text-xl">
+            {video.title}
+          </h3>
+          <p className="mt-2 min-h-12 font-poppins text-sm leading-6 text-dimWhite">
+            {video.description}
+          </p>
+          <a
+            href={
+              video.youtubeUrl ||
+              `https://www.youtube.com/shorts/${video.videoId}`
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-secondary/10 px-4 py-2.5 font-poppins text-sm font-semibold text-secondary transition-colors hover:bg-secondary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+          >
+            Watch on YouTube
+          </a>
+        </div>
+      </motion.article>
+    ))}
+  </div>
+);
+
 const features = [
   {
     title: "1. Report symptoms",
@@ -53,8 +103,97 @@ const features = [
   },
 ];
 
-const NineCare = () => (
-  <main className="min-h-screen bg-primary text-white">
+const NineCare = () => {
+  const videoCarouselRef = useRef(null);
+  const autoScrollPaused = useRef(false);
+  const resumeTimer = useRef(null);
+
+  useEffect(() => {
+    const carousel = videoCarouselRef.current;
+    const motionPreference = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+    autoScrollPaused.current = motionPreference.matches;
+    let frameId;
+    let previousFrameTime = 0;
+
+    const animate = (time) => {
+      if (carousel && !autoScrollPaused.current && previousFrameTime) {
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        if (maxScroll > 0) {
+          const elapsed = Math.min(time - previousFrameTime, 50);
+          carousel.scrollLeft += elapsed * 0.02;
+          if (carousel.scrollLeft >= maxScroll) {
+            carousel.scrollLeft = 0;
+          }
+        }
+      }
+
+      previousFrameTime = time;
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    const handleMotionPreferenceChange = (event) => {
+      autoScrollPaused.current =
+        event.matches ||
+        carousel.matches(":hover") ||
+        carousel.contains(document.activeElement);
+    };
+
+    frameId = window.requestAnimationFrame(animate);
+    motionPreference.addEventListener("change", handleMotionPreferenceChange);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      motionPreference.removeEventListener(
+        "change",
+        handleMotionPreferenceChange
+      );
+      window.clearTimeout(resumeTimer.current);
+    };
+  }, []);
+
+  const pauseVideoCarousel = () => {
+    window.clearTimeout(resumeTimer.current);
+    autoScrollPaused.current = true;
+  };
+
+  const resumeVideoCarousel = () => {
+    window.clearTimeout(resumeTimer.current);
+    resumeTimer.current = window.setTimeout(() => {
+      const carousel = videoCarouselRef.current;
+      const motionPreference = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
+      autoScrollPaused.current =
+        motionPreference.matches ||
+        carousel.matches(":hover") ||
+        carousel.contains(document.activeElement);
+    }, 1200);
+  };
+
+  const scrollVideoCarousel = (direction) => {
+    const carousel = videoCarouselRef.current;
+    if (!carousel) return;
+
+    const card = carousel.querySelector("article");
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+    const distance = card ? card.getBoundingClientRect().width + 28 : 320;
+    let target = carousel.scrollLeft + direction * distance;
+
+    if (direction < 0 && carousel.scrollLeft < 8) {
+      target = maxScroll;
+    } else if (direction > 0 && carousel.scrollLeft >= maxScroll - 8) {
+      target = 0;
+    }
+
+    pauseVideoCarousel();
+    carousel.scrollTo({ left: target, behavior: "smooth" });
+    resumeVideoCarousel();
+  };
+
+  return (
+    <main className="min-h-screen bg-primary text-white">
     <section className="bg-primary">
       <div className="mx-auto max-w-7xl px-6 pb-12 pt-8 sm:px-10 lg:px-16">
         <Link
@@ -95,58 +234,67 @@ const NineCare = () => (
         <h3 className="mb-5 font-poppins text-xl font-semibold text-white">
           YouTube walkthroughs
         </h3>
-        <div className="grid grid-cols-2 gap-7 lg:grid-cols-4">
-          {videos.map((video, index) => (
-            <motion.article
-              key={video.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -6 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.35,
-                delay: index * 0.08,
-                ease: "easeOut",
-              }}
-              className="group h-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#101a2d] to-[#070b14] shadow-lg transition-colors hover:border-secondary/40 hover:shadow-secondary/10"
+        <div className="relative">
+          <button
+            type="button"
+            aria-label="Scroll videos left"
+            onClick={() => scrollVideoCarousel(-1)}
+            className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-primary/90 text-white shadow-lg transition-colors hover:border-secondary hover:text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="h-6 w-6"
             >
-              <div className="aspect-[9/16] w-full overflow-hidden bg-black">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${video.videoId}`}
-                  title={video.title}
-                  className="h-full w-full"
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              </div>
-              <div className="p-5 sm:p-6">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="font-poppins text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-                    9Care AI
-                  </span>
-                </div>
-                <h3 className="font-poppins text-lg font-semibold leading-7 text-white sm:text-xl">
-                  {video.title}
-                </h3>
-                <p className="mt-2 min-h-12 font-poppins text-sm leading-6 text-dimWhite">
-                  {video.description}
-                </p>
-                <a
-                  href={
-                    video.youtubeUrl ||
-                    `https://www.youtube.com/shorts/${video.videoId}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-xl bg-secondary/10 px-4 py-2.5 font-poppins text-sm font-semibold text-secondary transition-colors hover:bg-secondary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
-                >
-                  Watch on YouTube
-                </a>
-              </div>
-            </motion.article>
-          ))}
+              <path
+                d="m15 18-6-6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <div
+            ref={videoCarouselRef}
+            className="ninecare-video-marquee"
+            role="region"
+            aria-label="9Care AI video carousel"
+            tabIndex={0}
+            onPointerEnter={pauseVideoCarousel}
+            onPointerLeave={resumeVideoCarousel}
+            onFocusCapture={pauseVideoCarousel}
+            onBlurCapture={resumeVideoCarousel}
+            onTouchStart={pauseVideoCarousel}
+            onTouchEnd={resumeVideoCarousel}
+            onWheel={pauseVideoCarousel}
+          >
+            <div className="ninecare-video-track">
+              <VideoCardGroup />
+            </div>
+          </div>
+          <button
+            type="button"
+            aria-label="Scroll videos right"
+            onClick={() => scrollVideoCarousel(1)}
+            className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-primary/90 text-white shadow-lg transition-colors hover:border-secondary hover:text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="h-6 w-6"
+            >
+              <path
+                d="m9 6 6 6-6 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </section>
@@ -229,7 +377,8 @@ const NineCare = () => (
         Return to AI Women Rising
       </Link>
     </div>
-  </main>
-);
+    </main>
+  );
+};
 
 export default NineCare;
