@@ -12,8 +12,10 @@ import lasu from "./lasu-logo.png";
 import memoir from "./memoir-logo.png";
 import bg from "./background-image.jpg";
 import amakaImage from "./amaka.jpg";
+import amakaUpdatedImage from "./amaka.jpeg";
 import olaImage from "./ola.jpg";
 import blessingImage from "./blessing.jpg";
+import leadImage from "./lead.jpeg";
 import member1 from "./member1.jpeg";
 import member2 from "./member2.jpeg";
 import member3 from "./member3.jpeg";
@@ -55,8 +57,10 @@ export {
   memoir,
   bg,
   amakaImage,
+  amakaUpdatedImage,
   olaImage,
   blessingImage,
+  leadImage,
   member1,
   member2,
   member3,

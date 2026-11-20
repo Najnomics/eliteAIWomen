@@ -22,7 +22,7 @@ export const navLinks = [
   {
     id: "clients",
     link: "/#clients",
-    title: "Partners",
+    title: "People",
   },
   {
     id: "blog",

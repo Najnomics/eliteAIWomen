@@ -1,7 +1,18 @@
-import { bg, blessingImage, amakaImage, olaImage } from "../assets";
+import {
+  bg,
+  blessingImage,
+  amakaUpdatedImage,
+  leadImage,
+  olaImage,
+} from "../assets";
 
 const TeamSection = () => {
   const team = [
+    {
+      name: "Vwakpor Efuetanu",
+      role: "Lead Innovator",
+      image: leadImage,
+    },
     {
       name: "Blessing Ikpia",
       role: "Project Lead",
@@ -9,8 +20,8 @@ const TeamSection = () => {
     },
     {
       name: "Ugbor Ukamaka",
-      role: "Assistant Project Lead",
-      image: amakaImage,
+      role: "Administrative Head",
+      image: amakaUpdatedImage,
     },
     {
       name: "Adeleke Olamide",
@@ -36,14 +47,14 @@ const TeamSection = () => {
       </h2>
 
       {/* Team Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 font-mono lg:grid-cols-3 gap-10 relative z-5">
+      <div className="relative z-5 grid w-full max-w-7xl grid-cols-1 gap-5 px-6 font-mono sm:grid-cols-2 lg:grid-cols-4">
         {team.map((member, index) => (
           <div
             key={index}
-            className="flex flex-col items-center text-center p-8 bg-blue-gradient-2 rounded-lg shadow-xl transition-transform duration-300 hover:scale-105"
+            className="flex flex-col items-center rounded-lg bg-blue-gradient-2 p-5 text-center shadow-xl transition-transform duration-300 hover:scale-105"
           >
             {/* Photo */}
-            <div className="w-36 h-36 rounded-full border-4 border-gray-300 overflow-hidden mb-6">
+            <div className="mb-5 h-28 w-28 overflow-hidden rounded-full border-4 border-gray-300">
               <img
                 src={member.image}
                 alt={member.name}
@@ -52,12 +63,14 @@ const TeamSection = () => {
             </div>
 
             {/* Name */}
-            <h3 className="text-2xl font-semibold text-gray-900">
+            <h3 className="whitespace-nowrap text-lg font-semibold text-gray-900">
               {member.name}
             </h3>
 
             {/* Role */}
-            <p className="text-lg text-white">{member.role}</p>
+            {member.role && (
+              <p className="whitespace-nowrap text-base text-white">{member.role}</p>
+            )}
           </div>
         ))}
       </div>
